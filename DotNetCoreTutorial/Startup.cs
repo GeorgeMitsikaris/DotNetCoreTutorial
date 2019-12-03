@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace DotNetCoreTutorial
 {
@@ -26,7 +27,7 @@ namespace DotNetCoreTutorial
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILogger<Startup> logger)
         {
             if (env.IsDevelopment())
             {
@@ -39,7 +40,15 @@ namespace DotNetCoreTutorial
             {
                 endpoints.MapGet("/", async context =>
                 {
-                    await context.Response.WriteAsync(_configuration["MyKey"]);
+                    logger.LogDebug("Incoming request 1");
+                    await context.Response.WriteAsync("Hello from first request\n");
+                    logger.LogDebug("Outgoing response 1");
+                    logger.LogDebug("Incoming request 2");
+                    await context.Response.WriteAsync("Hello from second request\n");
+                    logger.LogDebug("Outgoing response 2");
+                    logger.LogDebug("Incoming request 3");
+                    await context.Response.WriteAsync("Hello from third request");
+                    logger.LogDebug("Outgoing response 3");
                 });
             });
         }
