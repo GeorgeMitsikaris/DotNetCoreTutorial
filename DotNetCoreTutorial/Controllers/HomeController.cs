@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using DotNetCoreTutorial.Models;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,9 +9,16 @@ namespace DotNetCoreTutorial.Controllers
 {
     public class HomeController : Controller
     {
-        public JsonResult Index()
+        private IEmployeeRepository employeeRepository;
+
+        public HomeController(IEmployeeRepository employeeRepository)
         {
-            return Json(new { id = 1, name = "George" });
+            this.employeeRepository = employeeRepository;
+        }
+
+        public string Index()
+        {
+            return employeeRepository.GetEmployee(1).Name;
         }
     }
 }
