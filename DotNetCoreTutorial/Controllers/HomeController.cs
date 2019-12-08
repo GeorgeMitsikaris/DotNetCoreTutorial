@@ -20,5 +20,11 @@ namespace DotNetCoreTutorial.Controllers
         {
             return employeeRepository.GetEmployee(1).Name;
         }
+
+        public ViewResult Details()
+        {
+            var model = employeeRepository.GetEmployee(1);
+            return View(model);
+        }
     }
 }
