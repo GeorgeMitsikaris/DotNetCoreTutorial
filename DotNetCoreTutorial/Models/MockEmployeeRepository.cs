@@ -23,5 +23,10 @@ namespace DotNetCoreTutorial.Models
         {
             return _empmloyeeList.FirstOrDefault(e => e.Id.Equals(id));
         }
+
+        public IEnumerable<Employee> GetEmployees()
+        {
+            return _empmloyeeList;
+        }
     }
 }

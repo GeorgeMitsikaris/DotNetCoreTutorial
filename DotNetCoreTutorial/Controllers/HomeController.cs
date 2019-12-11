@@ -1,4 +1,5 @@
 ﻿using DotNetCoreTutorial.Models;
+using DotNetCoreTutorial.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -16,14 +17,17 @@ namespace DotNetCoreTutorial.Controllers
             this.employeeRepository = employeeRepository;
         }
 
-        public string Index()
+        public ViewResult Index()
         {
-            return employeeRepository.GetEmployee(1).Name;
+            var model = employeeRepository.GetEmployees();
+            return View(model);
         }
 
         public ViewResult Details()
         {
-            var model = employeeRepository.GetEmployee(1);
+            var model = new HomeDetailsViewModel();
+            model.PageTitle = "Employee Details";
+            model.Employee = employeeRepository.GetEmployee(1);
             return View(model);
         }
     }
