@@ -23,11 +23,11 @@ namespace DotNetCoreTutorial.Controllers
             return View(model);
         }
 
-        public ViewResult Details()
+        public ViewResult Details(int id)
         {
             var model = new HomeDetailsViewModel();
             model.PageTitle = "Employee Details";
-            model.Employee = employeeRepository.GetEmployee(1);
+            model.Employee = employeeRepository.GetEmployee(2);
             return View(model);
         }
     }

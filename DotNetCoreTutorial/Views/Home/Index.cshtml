@@ -1,30 +1,27 @@
-﻿@model IEnumerable<DotNetCoreTutorial.Models.Employee>
+﻿@model IEnumerable<Employee>
 
 @{
-    Layout = "~/Views/Shared/_Layout.cshtml";
     ViewBag.Title = "Index";
 }
 
 
-<h1>Index</h1>
-<table>
-    <thead>
-        <tr>
-            <th>Id</th>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Department</th>
-        </tr>
-    </thead>
-    <tbody>
+    <div class="card-deck">
         @foreach (var employee in Model)
         {
-            <tr>
-                <td>@employee.Id</td>
-                <td>@employee.Name</td>
-                <td>@employee.Email</td>
-                <td>@employee.Department</td>
-            </tr>
+             <div class="card m-3">
+                 <div class="card-header">
+                     <h3>@employee.Name</h3>
+                 </div>
+                 <img src="~/images/avatar.jpg" class="card-img-top" alt="@employee.Name" />
+                 <div class="card-footer text-center">
+                     <a href="#" class="btn btn-primary">View</a>
+                     <a href="#" class="btn btn-primary">Edit</a>
+                     <a href="#" class="btn btn-danger">Delete</a>
+                 </div>
+             </div>
         }
-    </tbody>
-</table>
+    </div>
+
+@section scripts{ 
+    <script src="~/js/CustomScript.js"></script>
+}
