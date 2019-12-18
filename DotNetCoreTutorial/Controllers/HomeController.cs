@@ -30,5 +30,10 @@ namespace DotNetCoreTutorial.Controllers
             model.Employee = employeeRepository.GetEmployee(2);
             return View(model);
         }
+
+        public ViewResult Create()
+        {
+            return View();
+        }
     }
 }
