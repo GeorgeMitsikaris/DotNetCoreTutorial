@@ -7,11 +7,11 @@ namespace DotNetCoreTutorial.Models
 {
     public class MockEmployeeRepository : IEmployeeRepository
     {
-        List<Employee> _empmloyeeList;
+        List<Employee> _employeeList;
 
         public MockEmployeeRepository()
         {
-            _empmloyeeList = new List<Employee>
+            _employeeList = new List<Employee>
             {
                 new Employee{Id=1,Name="Mary",Email="mary@test.com",Department=Dept.HR},
                 new Employee{Id=2,Name="John",Email="john@test.com",Department=Dept.IT},
@@ -19,14 +19,21 @@ namespace DotNetCoreTutorial.Models
             };
         }
 
+        public Employee Add(Employee employee)
+        {
+            employee.Id = _employeeList.Max(e => e.Id) + 1;
+            _employeeList.Add(employee);
+            return employee;
+        }
+
         public Employee GetEmployee(int id)
         {
-            return _empmloyeeList.FirstOrDefault(e => e.Id.Equals(id));
+            return _employeeList.FirstOrDefault(e => e.Id.Equals(id));
         }
 
         public IEnumerable<Employee> GetEmployees()
         {
-            return _empmloyeeList;
+            return _employeeList;
         }
     }
 }

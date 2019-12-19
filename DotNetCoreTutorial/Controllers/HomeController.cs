@@ -27,13 +27,21 @@ namespace DotNetCoreTutorial.Controllers
         {
             var model = new HomeDetailsViewModel();
             model.PageTitle = "Employee Details";
-            model.Employee = employeeRepository.GetEmployee(2);
+            model.Employee = employeeRepository.GetEmployee(id);
             return View(model);
         }
 
+        [HttpGet]
         public ViewResult Create()
         {
             return View();
+        }
+
+        [HttpPost]
+        public RedirectToActionResult Create(Employee employee)
+        {
+            employeeRepository.Add(employee);
+            return RedirectToAction("Details", new { id = employee.Id });
         }
     }
 }
