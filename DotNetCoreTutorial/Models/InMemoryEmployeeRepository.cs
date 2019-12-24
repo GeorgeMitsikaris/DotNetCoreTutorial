@@ -5,11 +5,11 @@ using System.Threading.Tasks;
 
 namespace DotNetCoreTutorial.Models
 {
-    public class MockEmployeeRepository : IEmployeeRepository
+    public class InMemoryEmployeeRepository : IEmployeeRepository
     {
         List<Employee> _employeeList;
 
-        public MockEmployeeRepository()
+        public InMemoryEmployeeRepository()
         {
             _employeeList = new List<Employee>
             {
@@ -26,6 +26,16 @@ namespace DotNetCoreTutorial.Models
             return employee;
         }
 
+        public Employee Delete(int id)
+        {
+            Employee employeeToDelete = _employeeList.FirstOrDefault(e => e.Id.Equals(id));
+            if (employeeToDelete != null)
+            {
+                _employeeList.Remove(employeeToDelete);
+            }
+            return employeeToDelete;
+        }
+
         public Employee GetEmployee(int id)
         {
             return _employeeList.FirstOrDefault(e => e.Id.Equals(id));
@@ -34,6 +44,18 @@ namespace DotNetCoreTutorial.Models
         public IEnumerable<Employee> GetEmployees()
         {
             return _employeeList;
+        }
+
+        public Employee Update(Employee employeeChanges)
+        {
+            Employee employeeToUpdate = _employeeList.FirstOrDefault(e => e.Id.Equals(employeeChanges.Id));
+            if (employeeToUpdate != null)
+            {
+                employeeToUpdate.Name = employeeChanges.Name;
+                employeeToUpdate.Email = employeeChanges.Email;
+                employeeToUpdate.Department = employeeChanges.Department;
+            }
+            return employeeToUpdate;
         }
     }
 }
