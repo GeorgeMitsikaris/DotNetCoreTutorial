@@ -1,0 +1,64 @@
+﻿@model EmployeeEditViewModel
+
+@{
+    ViewData["Title"] = "Edit";
+    var photoPath = "~/images/" + (Model.ExistingPhotoPath ?? "avatar.jpg");
+}
+
+<h1>Edit</h1>
+
+<form asp-action="Edit" class="mt-3" enctype="multipart/form-data">
+    <input hidden asp-for="Id" />
+    <input hidden asp-for="ExistingPhotoPath" />
+    <div asp-validation-summary="All" class="text-danger"></div>
+    <div class="form-group row">
+        <label asp-for="Name" class="col-form-label col-sm-2"></label>
+        <div class="col-sm-10">
+            <input asp-for="Name" class="form-control" />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label asp-for="Email" class="col-form-label col-sm-2"></label>
+        <div class="col-sm-10">
+            <input asp-for="Email" class="form-control" />
+            <span asp-validation-for="Email" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label asp-for="Department" class="col-form-label col-sm-2"></label>
+        <div class="col-sm-10">
+            <select asp-for="Department" asp-items="@Html.GetEnumSelectList<Dept>()" class="form-control">
+                <option value="">Select Department</option>
+            </select>
+            <span asp-validation-for="Department" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label asp-for="Photo" class="col-form-label col-sm-2"></label>
+        <div class="col-sm-10">
+            <div class="custom-file">
+                <input asp-for="Photo" class="form-control custom-file-input" />
+                <label class="custom-file-label">Click Here to Change Photo</label>
+            </div>
+        </div>
+    </div>
+    <div class="form-group row col-sm-4 offset-4"> 
+        <img src="@photoPath" asp-append-version="true" class="imageThumbnail" />
+    </div>
+    <div class="form-group col-sm-2 d-flex">
+        <input type="submit" value="Update" class="btn btn-primary mr-2" style="width:90%;" />
+        <a asp-action="Index" class="btn btn-outline-primary" style="width:90%">Cancel</a>
+    </div>
+</form>
+
+@section scripts{
+    <script>
+        $(document).ready(() => {
+            $('.custom-file-input').change(() => {
+                const value = $('.custom-file-input').val().split('\\').pop()
+                $('.custom-file-label').text(value);
+            })
+        })
+    </script>
+}
