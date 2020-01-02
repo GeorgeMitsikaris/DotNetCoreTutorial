@@ -27,12 +27,22 @@ namespace DotNetCoreTutorial.Controllers
             return View(model);
         }
 
-        public ViewResult Details(int id)
+        public ViewResult Details(int? id)
         {
-            var model = new HomeDetailsViewModel();
-            model.PageTitle = "Employee Details";
-            model.Employee = employeeRepository.GetEmployee(id);
-            return View(model);
+            Employee employee = employeeRepository.GetEmployee(id.Value);
+
+            if (employee == null)
+            {
+                Response.StatusCode = 404;
+                return View("EmployeeNotFound", id.Value);
+            }
+            else
+            {
+                var model = new HomeDetailsViewModel();
+                model.PageTitle = "Employee Details";
+                model.Employee = employee;
+                return View(model);
+            }
         }
 
         [HttpGet]
@@ -115,7 +125,7 @@ namespace DotNetCoreTutorial.Controllers
                 string imagesFolder = Path.Combine(hostingEnvironment.WebRootPath, "images");
                 uniqueFileName = Guid.NewGuid().ToString() + "_" + model.Photo.FileName;
                 string filePath = Path.Combine(imagesFolder, uniqueFileName);
-                using(FileStream fileStream = new FileStream(filePath, FileMode.Create))
+                using (FileStream fileStream = new FileStream(filePath, FileMode.Create))
                 {
                     model.Photo.CopyTo(fileStream);
                 }
