@@ -38,6 +38,7 @@ namespace DotNetCoreTutorial
             }
             else
             {
+                app.UseExceptionHandler("/Error");
                 app.UseStatusCodePagesWithRedirects("Error/{0}");
             }
 

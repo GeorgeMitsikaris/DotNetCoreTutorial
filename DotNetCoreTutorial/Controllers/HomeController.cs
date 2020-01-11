@@ -29,6 +29,7 @@ namespace DotNetCoreTutorial.Controllers
 
         public ViewResult Details(int? id)
         {
+            throw new Exception();
             Employee employee = employeeRepository.GetEmployee(id.Value);
 
             if (employee == null)
