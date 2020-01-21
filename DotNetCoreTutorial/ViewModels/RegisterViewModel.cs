@@ -17,7 +17,7 @@ namespace DotNetCoreTutorial.ViewModels
         public string Password { get; set; }
 
         [DataType(DataType.Password)]
-        [Display(Name = "")]
+        [Display(Name = "Confirm Password")]
         [Compare("Password", ErrorMessage = "Password and Confirm Password do not match ")]
         public string ConfirmPassword { get; set; }
     }
