@@ -25,7 +25,10 @@ namespace DotNetCoreTutorial
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContextPool<AppDbContext>(options => options.UseSqlServer(_configuration.GetConnectionString("EmployeeDBConnection")));
-            services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<AppDbContext>();
+            services.AddIdentity<IdentityUser, IdentityRole>(options=> {
+                options.Password.RequiredLength = 5;
+                options.Password.RequiredUniqueChars = 3;
+            }).AddEntityFrameworkStores<AppDbContext>();
             services.AddControllersWithViews();
             services.AddRazorPages();
             services.AddScoped<IEmployeeRepository, SQLEmployeeRepository>();
