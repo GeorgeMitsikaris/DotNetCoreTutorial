@@ -25,22 +25,54 @@ namespace DotNetCoreTutorial.Controllers
             return View();
         }
 
+        [HttpGet]
+        public async Task<IActionResult> Logout()
+        {
+            await signInManager.SignOutAsync().ConfigureAwait(false);
+            return RedirectToAction("Index", "Home");
+        }
+
         [HttpPost]
         public async Task<IActionResult> Register(RegisterViewModel model)
         {
             if (ModelState.IsValid)
             {
                 IdentityUser user = new IdentityUser { Email = model.Email, UserName = model.Email };
-                var result = await userManager.CreateAsync(user, model.Password);
+                var result = await userManager.CreateAsync(user, model.Password).ConfigureAwait(false);
 
                 if (result.Succeeded)
                 {
-                    await signInManager.SignInAsync(user, false);
+                    await signInManager.SignInAsync(user, false).ConfigureAwait(false);
                     return RedirectToAction("Index", "Home");
                 }
                 foreach (var error in result.Errors)
                 {
                     ModelState.AddModelError(string.Empty, error.Description);
+                }
+            }
+            return View(model);
+        }
+        
+        [HttpGet]
+        public IActionResult Login()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Login(LoginViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await signInManager.PasswordSignInAsync(model.UserName, model.Password, model.RememberMe, false).ConfigureAwait(false);
+
+                if (result.Succeeded)
+                {
+                    return RedirectToAction("Index", "Home");
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, "Invalid login attempt");
                 }
             }
             return View(model);
