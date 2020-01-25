@@ -1,5 +1,6 @@
 ﻿using DotNetCoreTutorial.Models;
 using DotNetCoreTutorial.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -21,12 +22,14 @@ namespace DotNetCoreTutorial.Controllers
             this.hostingEnvironment = hostingEnvironment;
         }
 
+        [AllowAnonymous]
         public ViewResult Index()
         {
             var model = employeeRepository.GetEmployees();
             return View(model);
         }
 
+        [AllowAnonymous]
         public ViewResult Details(int? id)
         {
             Employee employee = employeeRepository.GetEmployee(id.Value);
