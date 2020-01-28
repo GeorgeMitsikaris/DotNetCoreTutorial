@@ -55,7 +55,7 @@ namespace DotNetCoreTutorial.Controllers
             }
             return View(model);
         }
-        
+
         [HttpGet]
         [AllowAnonymous]
         public IActionResult Login()
@@ -73,7 +73,7 @@ namespace DotNetCoreTutorial.Controllers
 
                 if (result.Succeeded)
                 {
-                    if(string.IsNullOrEmpty(returnUrl))
+                    if (string.IsNullOrEmpty(returnUrl))
                     {
                         return LocalRedirect(returnUrl);
                     }
@@ -89,6 +89,15 @@ namespace DotNetCoreTutorial.Controllers
                 }
             }
             return View(model);
+        }
+
+        [AcceptVerbs("Get", "Post")]
+        [AllowAnonymous]
+        public async Task<IActionResult> IsEmailInUse(string email)
+        {
+            var user = await userManager.FindByEmailAsync(email).ConfigureAwait(false);
+
+            return user != null ? Json($"Email {email} is already in use") : Json(true);
         }
     }
 }
