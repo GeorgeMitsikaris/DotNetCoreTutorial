@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using DotNetCoreTutorial.Utilities;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -11,6 +12,7 @@ namespace DotNetCoreTutorial.ViewModels
     {
         [Required]
         [EmailAddress]
+        [ValidEmailDomain("test.com", ErrorMessage = "The domain of the email must be test.com")]
         [Remote(action:"IsEmailInUse", controller: "Account")]
         public string Email { get; set; }
 
@@ -22,5 +24,7 @@ namespace DotNetCoreTutorial.ViewModels
         [Display(Name = "Confirm Password")]
         [Compare("Password", ErrorMessage = "Password and Confirm Password do not match ")]
         public string ConfirmPassword { get; set; }
+
+        public string City { get; set; }
     }
 }

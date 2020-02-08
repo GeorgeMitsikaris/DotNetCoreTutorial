@@ -1,0 +1,49 @@
+﻿@model EditRoleViewModel
+@{
+    ViewData["Title"] = "Edit Role";
+}
+
+<h1>Edit Role</h1>
+
+<form method="post">
+    <div class="form-group row mt-3 col-12">
+        <label class="col-2 col-form-label" asp-for="Id"></label>
+        <div class="col-10">
+            <input class="form-control" asp-for="Id" disabled />
+        </div>
+    </div>
+    <div class="form-group row mt-3 col-12">
+        <label class="col-2 col-form-label" asp-for="RoleName"></label>
+        <div class="col-10">
+            <input class="form-control col-10" asp-for="RoleName" />
+        </div>
+    </div>
+    <div class="text-danger" asp-validation-summary="All"></div>
+    <div class="form-group row">
+        <div class="col-10">
+            <button type="submit" class="btn btn-primary mr-1 mb-3">Update</button>
+            <a asp-action="ListRoles" class="btn btn-primary mb-3">Cancel</a>
+        </div>
+    </div>
+
+
+    <div class="card">
+        <div class="card-header">Users in this role</div>
+        <div class="card-body">
+            @if (Model.Users.Any())
+            {
+                foreach (var user in Model.Users)
+                {
+                    <div class="card-title">@user</div>
+                }
+            }
+            else
+            {
+                <div class="card-title">None at the moment</div>
+            }
+        </div>
+        <div class="card-footer">
+            <a asp-action="EditUsersInRole" asp-controller="Administration" asp-route-roleId="@Model.Id" class="btn btn-primary mr-1" style="width:auto">Add Or Remove Users</a>
+        </div>
+    </div>
+</form>
