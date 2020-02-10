@@ -29,13 +29,6 @@ namespace DotNetCoreTutorial.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Logout()
-        {
-            await signInManager.SignOutAsync().ConfigureAwait(false);
-            return RedirectToAction("Index", "Home");
-        }
-
-        [HttpPost]
         [AllowAnonymous]
         public async Task<IActionResult> Register(RegisterViewModel model)
         {
@@ -46,6 +39,10 @@ namespace DotNetCoreTutorial.Controllers
 
                 if (result.Succeeded)
                 {
+                    if(signInManager.IsSignedIn(User) &&  User.IsInRole("Admin"))
+                    {
+                        return RedirectToAction("ListUsers", "Administration");
+                    }
                     await signInManager.SignInAsync(user, false).ConfigureAwait(false);
                     return RedirectToAction("Index", "Home");
                 }
@@ -65,6 +62,13 @@ namespace DotNetCoreTutorial.Controllers
         }
 
         [HttpPost]
+        public async Task<IActionResult> Logout()
+        {
+            await signInManager.SignOutAsync().ConfigureAwait(false);
+            return RedirectToAction("Index", "Home");
+        }
+
+        [HttpPost]
         [AllowAnonymous]
         public async Task<IActionResult> Login(LoginViewModel model, string returnUrl)
         {
@@ -74,7 +78,7 @@ namespace DotNetCoreTutorial.Controllers
 
                 if (result.Succeeded)
                 {
-                    if (string.IsNullOrEmpty(returnUrl))
+                    if (!string.IsNullOrEmpty(returnUrl))
                     {
                         return LocalRedirect(returnUrl);
                     }
@@ -99,6 +103,13 @@ namespace DotNetCoreTutorial.Controllers
             var user = await userManager.FindByEmailAsync(email).ConfigureAwait(false);
 
             return user != null ? Json($"Email {email} is already in use") : Json(true);
+        }
+
+        [HttpGet]
+        [AllowAnonymous]
+        public IActionResult AccessDenied()
+        {
+            return View();
         }
     }
 }

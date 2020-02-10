@@ -6,6 +6,7 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
     <environment include="Development">
         <link href="~/lib/bootstrap/css/bootstrap.css" rel="stylesheet" />
         <script src="~/lib/jquery/jquery.js"></script>
@@ -39,10 +40,19 @@
                     <li class="nav-item">
                         <a asp-action="index" asp-controller="home" class="nav-link">List</a>
                     </li>
-                    
+
                     <li class="nav-item">
                         <a asp-action="create" asp-controller="home" class="nav-link">Create</a>
                     </li>
+                    @if (signInManager.IsSignedIn(User) && User.IsInRole("Admin"))
+                    {
+                        <li class="nav-item">
+                            <a asp-action="ListRoles" asp-controller="Administration" class="nav-link">Manage Roles</a>
+                        </li>
+                        <li class="nav-item">
+                            <a asp-action="ListUsers" asp-controller="Administration" class="nav-link">Manage Users</a>
+                        </li>
+                    }
                 </ul>
                 <ul class="navbar-nav ml-auto">
                     @if (signInManager.IsSignedIn(User))

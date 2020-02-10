@@ -4,11 +4,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using DotNetCoreTutorial.Models;
 using DotNetCoreTutorial.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DotNetCoreTutorial.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class AdministrationController : Controller
     {
         private readonly RoleManager<IdentityRole> roleManager;
@@ -186,6 +188,72 @@ namespace DotNetCoreTutorial.Controllers
                 }
             }
             return RedirectToAction("EditRole", new { id = role.Id });
+        }
+
+        [HttpGet]
+        public IActionResult ListUsers()
+        {
+            return View(userManager.Users.ToList());
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> EditUser(string id)
+        {
+            var user = await userManager.FindByIdAsync(id).ConfigureAwait(false);
+
+            if(user == null)
+            {
+                ViewBag.Message = $"The user with id {id} cannot be found";
+                return RedirectToAction("NotFound");
+            }
+
+            var roles = await userManager.GetRolesAsync(user).ConfigureAwait(false);
+            var claims = await userManager.GetClaimsAsync(user).ConfigureAwait(false);
+
+            EditUserViewModel model = new EditUserViewModel
+            {
+                Id = user.Id,
+                Email = user.Email,
+                UserName = user.UserName,
+                City = user.City,
+                Claims = claims.Select(c => c.Value).ToList(),
+                Roles = roles
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditUser(EditUserViewModel model)
+        {
+            var user = await userManager.FindByIdAsync(model.Id).ConfigureAwait(false);
+
+            if (user == null)
+            {
+                ViewBag.Message = $"The user with id {model.Id} cannot be found";
+                return RedirectToAction("NotFound");
+            }
+            else
+            {
+                user.Email = model.Email;
+                user.UserName = model.UserName;
+                user.City = model.City;
+
+                var result = await userManager.UpdateAsync(user).ConfigureAwait(false);
+
+                if (result.Succeeded)
+                {
+                    return RedirectToAction("ListUsers");
+                }
+                else
+                {
+                    foreach (var error in result.Errors)
+                    {
+                        ModelState.AddModelError("", error.Description);
+                    }
+                    return View(model);
+                }
+            }
         }
     }
 }
