@@ -17,7 +17,7 @@
             Use the button above to create a user
         </div>
         <div class="card-footer">
-           
+
         </div>
     </div>
 }
@@ -32,10 +32,12 @@ else
             <div class="card-body">
                 @user.UserName
             </div>
-            <div class="card-footer">
-                <a asp-action="EditUser" asp-controller="Administration" asp-route-id="@user.Id" class="btn btn-primary">Edit</a>
-                <a asp-action="DeleteUser" asp-controller="Administration" asp-route-id="@user.Id" class="btn btn-danger">Delete</a>
-            </div>
+            <form method="post" asp-action="DeleteUser" asp-route-id="@user.Id">
+                <div class="card-footer">
+                    <a asp-action="EditUser" asp-controller="Administration" asp-route-id="@user.Id" class="btn btn-primary">Edit</a>
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </div>
+            </form>
         </div>
     }
 }

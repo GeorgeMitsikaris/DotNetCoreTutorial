@@ -201,7 +201,7 @@ namespace DotNetCoreTutorial.Controllers
         {
             var user = await userManager.FindByIdAsync(id).ConfigureAwait(false);
 
-            if(user == null)
+            if (user == null)
             {
                 ViewBag.Message = $"The user with id {id} cannot be found";
                 return RedirectToAction("NotFound");
@@ -254,6 +254,33 @@ namespace DotNetCoreTutorial.Controllers
                     return View(model);
                 }
             }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteUser(string id)
+        {
+            var user = await userManager.FindByIdAsync(id).ConfigureAwait(false);
+
+            if (user == null)
+            {
+                ViewBag.Message = $"The user with id {id} cannot be found";
+                return NotFound();
+            }
+
+            var result = await userManager.DeleteAsync(user).ConfigureAwait(false);
+
+            if (result.Succeeded)
+            {
+                return RedirectToAction("ListUsers");
+            }
+            else
+            {
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError("", error.Description);
+                }
+            }
+            return View("ListUsers");
         }
     }
 }
