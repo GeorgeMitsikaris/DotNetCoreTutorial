@@ -10,3 +10,16 @@
         $(`#${idToConfirmDelete}`).hide();
     }
 }
+
+function deleteRole(roleId, isDeleted) {
+    const idToDelete = `delete_${roleId}`;
+    const idToConfirmDelete = `confirmDelete_${roleId}`;
+
+    if (isDeleted) {
+        $(`#${idToDelete}`).hide();
+        $(`#${idToConfirmDelete}`).show();
+    } else {
+        $(`#${idToDelete}`).show();
+        $(`#${idToConfirmDelete}`).hide();
+    }
+}

@@ -88,6 +88,33 @@ namespace DotNetCoreTutorial.Controllers
         }
 
         [HttpPost]
+        public async Task<IActionResult> DeleteRole(string id)
+        {
+            var role = await roleManager.FindByIdAsync(id).ConfigureAwait(false);
+            if (role == null)
+            {
+                ViewBag.Message = $"The role with id {id} cannot be found";
+                return View("NotFound");
+            }
+            else
+            {
+                var result = await roleManager.DeleteAsync(role).ConfigureAwait(false);
+                if (result.Succeeded)
+                {
+                    return RedirectToAction("ListRoles");
+                }
+                else
+                {
+                    foreach (var error in result.Errors)
+                    {
+                        ModelState.AddModelError("", error.Description);
+                    }
+                    return View("ListRoles");
+                }
+            }
+        }
+
+        [HttpPost]
         public async Task<IActionResult> EditRole(EditRoleViewModel model)
         {
             var role = await roleManager.FindByIdAsync(model.Id).ConfigureAwait(false);
