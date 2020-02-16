@@ -7,6 +7,8 @@ using DotNetCoreTutorial.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace DotNetCoreTutorial.Controllers
 {
@@ -15,11 +17,15 @@ namespace DotNetCoreTutorial.Controllers
     {
         private readonly RoleManager<IdentityRole> roleManager;
         private readonly UserManager<ApplicationUser> userManager;
+        private readonly ILogger<AdministrationController> logger;
 
-        public AdministrationController(RoleManager<IdentityRole> roleManager, UserManager<ApplicationUser> userManager)
+        public AdministrationController(RoleManager<IdentityRole> roleManager, 
+                                        UserManager<ApplicationUser> userManager,
+                                        ILogger<AdministrationController> logger)
         {
             this.roleManager = roleManager;
             this.userManager = userManager;
+            this.logger = logger;
         }
 
         [HttpGet]
@@ -98,18 +104,28 @@ namespace DotNetCoreTutorial.Controllers
             }
             else
             {
-                var result = await roleManager.DeleteAsync(role).ConfigureAwait(false);
-                if (result.Succeeded)
+                try
                 {
-                    return RedirectToAction("ListRoles");
-                }
-                else
-                {
-                    foreach (var error in result.Errors)
+                    var result = await roleManager.DeleteAsync(role).ConfigureAwait(false);
+                    if (result.Succeeded)
                     {
-                        ModelState.AddModelError("", error.Description);
+                        return RedirectToAction("ListRoles");
                     }
-                    return View("ListRoles");
+                    else
+                    {
+                        foreach (var error in result.Errors)
+                        {
+                            ModelState.AddModelError("", error.Description);
+                        }
+                        return View("ListRoles");
+                    }
+                }
+                catch(DbUpdateException ex)
+                {
+                    ViewBag.ErrorTitle = $"The role {role.Name} is in use";
+                    ViewBag.ErrorMessage = "If you want to delete this role, first delete the users who have this role";
+                    logger.LogError($"error deleting role {ex}");
+                    return View("Error");
                 }
             }
         }

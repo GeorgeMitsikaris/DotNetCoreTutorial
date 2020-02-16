@@ -1,3 +1,12 @@
-﻿<h3>An error occured while processing your request.</h3>
-<h5>Please contact us on test@test.com</h5>
-<hr />
+﻿
+@if (ViewBag.ErrorTitle == null)
+{
+    <h3>An error occured while processing your request.</h3>
+    <h5>Please contact us on test@test.com</h5>
+    <hr />
+}
+else
+{
+    <h1>@ViewBag.ErrorTitle</h1>
+    <h5>@ViewBag.ErrorMessage</h5>
+}

@@ -21,7 +21,11 @@
               asp-fallback-test-property="position"
               asp-fallback-test-value="absolute"
               asp-suppress-fallback-integrity="true">
-
+        <link href="~/lib/bootstrap/css/bootstrap.css" rel="stylesheet" />
+        <script src="~/lib/jquery/jquery.js"></script>
+        <script src="~/lib/jquery-validate/jquery.validate.js"></script>
+        <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
+        <script src="~/lib/bootstrap/js/bootstrap.js"></script>
     </environment>
     <link href="~/css/Site.css" rel="stylesheet" />
     <title>@ViewBag.Title</title>
@@ -59,7 +63,7 @@
                     {
                         <li class="nav-item">
                             <form method="post" asp-controller="Account" asp-action="Logout">
-                            <button type="submit" class="nav-link btn btn-link py-0" style="width:auto;">Logout @User.Identity.Name</button>
+                                <button type="submit" class="nav-link btn btn-link py-0" style="width:auto;">Logout @User.Identity.Name</button>
                             </form>
                         </li>
                     }

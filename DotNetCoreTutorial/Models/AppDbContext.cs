@@ -20,6 +20,11 @@ namespace DotNetCoreTutorial.Models
         {
             base.OnModelCreating(modelBuilder);
             modelBuilder.Seed();
+
+            foreach (var foreingnKey in modelBuilder.Model.GetEntityTypes().SelectMany(e=>e.GetForeignKeys()))
+            {
+                foreingnKey.DeleteBehavior = DeleteBehavior.Restrict;
+            }
         }
     }
 }
