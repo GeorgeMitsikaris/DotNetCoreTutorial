@@ -38,6 +38,23 @@ namespace DotNetCoreTutorial
                 var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
                 config.Filters.Add(new AuthorizeFilter(policy));
             });
+            services.AddAuthorization(config =>
+            {
+                config.AddPolicy("DeleteRolePolicy", policy =>
+                {
+                    policy.RequireClaim("Delete Role");
+                });
+
+                config.AddPolicy("EditRolePolicy", policy =>
+                {
+                    policy.RequireClaim("Edit Role");
+                });
+
+                config.AddPolicy("AdminRolePolice", policy =>
+                {
+                    policy.RequireRole("Admin");
+                });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -13,7 +13,7 @@ using Microsoft.Extensions.Logging;
 
 namespace DotNetCoreTutorial.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize(Policy = "AdminRolePolice")]
     public class AdministrationController : Controller
     {
         private readonly RoleManager<IdentityRole> roleManager;
@@ -67,6 +67,7 @@ namespace DotNetCoreTutorial.Controllers
         }
 
         [HttpGet]
+        [Authorize(Policy ="EditRolePolicy")]
         public async Task<IActionResult> EditRole(string id)
         {
             var role = await roleManager.FindByIdAsync(id).ConfigureAwait(false);
@@ -95,6 +96,7 @@ namespace DotNetCoreTutorial.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = "DeleteRolePolicy")]
         public async Task<IActionResult> DeleteRole(string id)
         {
             var role = await roleManager.FindByIdAsync(id).ConfigureAwait(false);
@@ -241,6 +243,7 @@ namespace DotNetCoreTutorial.Controllers
         }
 
         [HttpGet]
+        [Authorize(Policy ="EditRolePolicy")]
         public async Task<IActionResult> EditUser(string id)
         {
             var user = await userManager.FindByIdAsync(id).ConfigureAwait(false);
