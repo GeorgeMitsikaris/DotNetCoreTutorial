@@ -263,7 +263,7 @@ namespace DotNetCoreTutorial.Controllers
                 Email = user.Email,
                 UserName = user.UserName,
                 City = user.City,
-                Claims = claims.Select(c => c.Value).ToList(),
+                Claims = claims.Select(c => c.Type + ": " + c.Value).ToList(),
                 Roles = roles
             };
 
@@ -422,7 +422,7 @@ namespace DotNetCoreTutorial.Controllers
                     ClaimType = claim.Type,
                 };
 
-                if (existingUserClaims.Any(c => c.Type == claim.Type))
+                if (existingUserClaims.Any(c => c.Type == claim.Type && c.Value == "true"))
                 {
                     userClaim.IsSelected = true;
                 }
@@ -453,7 +453,7 @@ namespace DotNetCoreTutorial.Controllers
                 return View(model);
             }
 
-            result = await userManager.AddClaimsAsync(user, model.Claims.Where(c => c.IsSelected).Select(c => new Claim(c.ClaimType, c.ClaimType))).ConfigureAwait(false);
+            result = await userManager.AddClaimsAsync(user, model.Claims.Select(c => new Claim(c.ClaimType, c.IsSelected?"true":"false"))).ConfigureAwait(false);
 
             if (!result.Succeeded)
             {

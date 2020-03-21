@@ -49,7 +49,7 @@ namespace DotNetCoreTutorial
 
                 config.AddPolicy("EditRolePolicy", policy =>
                 {
-                    policy.RequireClaim("Edit Role");
+                    policy.RequireClaim("Edit Role", "true");
                 });
 
                 config.AddPolicy("AdminRolePolice", policy =>
