@@ -27,6 +27,7 @@ namespace DotNetCoreTutorial
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContextPool<AppDbContext>(options => options.UseSqlServer(_configuration.GetConnectionString("EmployeeDBConnection")));
+
             services.AddIdentity<ApplicationUser, IdentityRole>(options=> {
                 options.Password.RequiredLength = 5;
                 options.Password.RequiredUniqueChars = 3;
@@ -38,6 +39,7 @@ namespace DotNetCoreTutorial
                 var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
                 config.Filters.Add(new AuthorizeFilter(policy));
             });
+
             services.AddAuthorization(config =>
             {
                 config.AddPolicy("DeleteRolePolicy", policy =>
@@ -54,6 +56,11 @@ namespace DotNetCoreTutorial
                 {
                     policy.RequireRole("Admin");
                 });
+            });
+
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.AccessDeniedPath = new PathString("/Administration/AccessDenied");
             });
         }
 

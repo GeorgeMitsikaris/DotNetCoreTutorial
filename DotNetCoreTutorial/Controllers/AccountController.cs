@@ -104,12 +104,5 @@ namespace DotNetCoreTutorial.Controllers
 
             return user != null ? Json($"Email {email} is already in use") : Json(true);
         }
-
-        [HttpGet]
-        [AllowAnonymous]
-        public IActionResult AccessDenied()
-        {
-            return View();
-        }
     }
 }
