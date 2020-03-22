@@ -49,7 +49,12 @@ namespace DotNetCoreTutorial
 
                 config.AddPolicy("EditRolePolicy", policy =>
                 {
-                    policy.RequireClaim("Edit Role", "true");
+                    policy.RequireAssertion(handler =>
+                    {
+                        return
+                        (handler.User.IsInRole("Admin") && handler.User.HasClaim(claim => claim.Type == "Edit Role" && claim.Value == "true")) ||
+                        handler.User.IsInRole("Super Admin");
+                    });
                 });
 
                 config.AddPolicy("AdminRolePolice", policy =>

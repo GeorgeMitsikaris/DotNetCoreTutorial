@@ -13,7 +13,7 @@ using Microsoft.Extensions.Logging;
 
 namespace DotNetCoreTutorial.Controllers
 {
-    [Authorize(Policy = "AdminRolePolice")]
+    //[Authorize(Policy = "AdminRolePolice")]
     public class AdministrationController : Controller
     {
         private readonly RoleManager<IdentityRole> roleManager;
