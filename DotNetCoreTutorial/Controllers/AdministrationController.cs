@@ -13,7 +13,7 @@ using Microsoft.Extensions.Logging;
 
 namespace DotNetCoreTutorial.Controllers
 {
-    //[Authorize(Policy = "AdminRolePolice")]
+    //[Authorize(Policy = "AdminRolePolicy")]
     public class AdministrationController : Controller
     {
         private readonly RoleManager<IdentityRole> roleManager;
@@ -67,7 +67,6 @@ namespace DotNetCoreTutorial.Controllers
         }
 
         [HttpGet]
-        [Authorize(Policy ="EditRolePolicy")]
         public async Task<IActionResult> EditRole(string id)
         {
             var role = await roleManager.FindByIdAsync(id).ConfigureAwait(false);
@@ -243,7 +242,6 @@ namespace DotNetCoreTutorial.Controllers
         }
 
         [HttpGet]
-        [Authorize(Policy ="EditRolePolicy")]
         public async Task<IActionResult> EditUser(string id)
         {
             var user = await userManager.FindByIdAsync(id).ConfigureAwait(false);
@@ -331,6 +329,7 @@ namespace DotNetCoreTutorial.Controllers
         }
 
         [HttpGet]
+        [Authorize(Policy = "EditRolePolicy")]
         public async Task<IActionResult> ManageUserRoles(string userId)
         {
             ViewBag.UserId = userId;
@@ -368,6 +367,7 @@ namespace DotNetCoreTutorial.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = "EditRolePolicy")]
         public async Task<IActionResult> ManageUserRoles(List<UserRolesViewModel> model, string userId)
         {
             var user = await userManager.FindByIdAsync(userId).ConfigureAwait(false);
@@ -398,6 +398,7 @@ namespace DotNetCoreTutorial.Controllers
         }
 
         [HttpGet]
+        [Authorize(Policy = "EditRolePolicy")]
         public async Task<IActionResult> ManageUserClaims(string id)
         {
             var user = await userManager.FindByIdAsync(id).ConfigureAwait(false);
@@ -434,6 +435,7 @@ namespace DotNetCoreTutorial.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = "EditRolePolicy")]
         public async Task<IActionResult> ManageUserClaims(UserClaimsViewModel model)
         {
             var user = await userManager.FindByIdAsync(model.UserId).ConfigureAwait(false);

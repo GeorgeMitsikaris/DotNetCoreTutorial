@@ -1,4 +1,5 @@
 using DotNetCoreTutorial.Models;
+using DotNetCoreTutorial.Security;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -35,6 +36,7 @@ namespace DotNetCoreTutorial
             services.AddControllersWithViews();
             services.AddRazorPages();
             services.AddScoped<IEmployeeRepository, SQLEmployeeRepository>();
+            services.AddSingleton<IAuthorizationHandler, CanEditOnlyOtherAdminRolesAndClaimsHandler>();
             services.AddMvc(config => {
                 var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
                 config.Filters.Add(new AuthorizeFilter(policy));
@@ -49,15 +51,16 @@ namespace DotNetCoreTutorial
 
                 config.AddPolicy("EditRolePolicy", policy =>
                 {
-                    policy.RequireAssertion(handler =>
-                    {
-                        return
-                        (handler.User.IsInRole("Admin") && handler.User.HasClaim(claim => claim.Type == "Edit Role" && claim.Value == "true")) ||
-                        handler.User.IsInRole("Super Admin");
-                    });
+                    policy.AddRequirements(new ManageAdminRolesAndClaimsRequirement());
+                    //policy.RequireAssertion(handler =>
+                    //{
+                    //    return
+                    //    (handler.User.IsInRole("Admin") && handler.User.HasClaim(claim => claim.Type == "Edit Role" && claim.Value == "true")) ||
+                    //    handler.User.IsInRole("Super Admin");
+                    //});
                 });
 
-                config.AddPolicy("AdminRolePolice", policy =>
+                config.AddPolicy("AdminRolePolicy", policy =>
                 {
                     policy.RequireRole("Admin");
                 });
@@ -67,6 +70,7 @@ namespace DotNetCoreTutorial
             {
                 options.AccessDeniedPath = new PathString("/Administration/AccessDenied");
             });
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
