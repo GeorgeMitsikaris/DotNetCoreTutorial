@@ -74,6 +74,14 @@ namespace DotNetCoreTutorial.Controllers
         {
             if (ModelState.IsValid)
             {
+                var user = await userManager.FindByEmailAsync(model.UserName).ConfigureAwait(false);
+
+                if(user!=null && !user.EmailConfirmed && (await userManager.CheckPasswordAsync(user, model.Password).ConfigureAwait(false)))
+                {
+                    ModelState.AddModelError("", "Email is not confirmed yet");
+                    return View(model);
+                }
+
                 var result = await signInManager.PasswordSignInAsync(model.UserName, model.Password, model.RememberMe, false).ConfigureAwait(false);
 
                 if (result.Succeeded)
