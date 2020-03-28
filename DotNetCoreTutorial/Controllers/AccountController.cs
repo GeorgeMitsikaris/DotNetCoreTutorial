@@ -7,6 +7,7 @@ using DotNetCoreTutorial.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace DotNetCoreTutorial.Controllers
 {
@@ -14,11 +15,13 @@ namespace DotNetCoreTutorial.Controllers
     {
         private readonly UserManager<ApplicationUser> userManager;
         private readonly SignInManager<ApplicationUser> signInManager;
+        private readonly ILogger<AccountController> logger;
 
-        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
+        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, ILogger<AccountController> logger)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
+            this.logger = logger;
         }
 
         [HttpGet]
@@ -37,15 +40,24 @@ namespace DotNetCoreTutorial.Controllers
                 ApplicationUser user = new ApplicationUser { Email = model.Email, UserName = model.Email, City = model.City };
                 var result = await userManager.CreateAsync(user, model.Password).ConfigureAwait(false);
 
+                var token = await userManager.GenerateEmailConfirmationTokenAsync(user).ConfigureAwait(false);
+                var confirmationLink = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, token }, Request.Scheme);
+
+                logger.Log(LogLevel.Warning, confirmationLink);
+
                 if (result.Succeeded)
                 {
                     if(signInManager.IsSignedIn(User) &&  User.IsInRole("Admin"))
                     {
                         return RedirectToAction("ListUsers", "Administration");
                     }
-                    await signInManager.SignInAsync(user, false).ConfigureAwait(false);
-                    return RedirectToAction("Index", "Home");
+                   
+                ViewBag.ErrorTitle = "Registration Successful";
+                ViewBag.ErrorMessage = "Before you can Login, please confirm your email, by clicking on the confirmation link we have emailed you";
+
+                return View("Error");
                 }
+
                 foreach (var error in result.Errors)
                 {
                     ModelState.AddModelError(string.Empty, error.Description);
@@ -111,6 +123,36 @@ namespace DotNetCoreTutorial.Controllers
             var user = await userManager.FindByEmailAsync(email).ConfigureAwait(false);
 
             return user != null ? Json($"Email {email} is already in use") : Json(true);
+        }
+
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IActionResult> ConfirmEmail(string userId, string token)
+        {
+            if(userId == null || token == null) 
+            {
+                return View("Index", "Home");
+            }
+
+            var user = await userManager.FindByIdAsync(userId).ConfigureAwait(false);
+
+            if (user == null)
+            {
+                ViewBag.ErrorMessage = $"The user id {userId} is invalid";
+                return View("NotFound");
+            }
+
+            var result = await userManager.ConfirmEmailAsync(user, token).ConfigureAwait(false);
+
+            if (result.Succeeded)
+            {
+                return View();
+            }
+            else
+            {
+                ViewBag.ErrorTitle = "The email cannot be confirmed";
+                return View("Error");
+            }
         }
     }
 }

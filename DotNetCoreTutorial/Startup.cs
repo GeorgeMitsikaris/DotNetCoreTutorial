@@ -34,12 +34,20 @@ namespace DotNetCoreTutorial
                 options.Password.RequiredUniqueChars = 3;
 
                 options.SignIn.RequireConfirmedEmail = true;
-            }).AddEntityFrameworkStores<AppDbContext>();
+            })
+                .AddEntityFrameworkStores<AppDbContext>()
+                .AddDefaultTokenProviders();
+
             services.AddControllersWithViews();
+
             services.AddRazorPages();
+
             services.AddScoped<IEmployeeRepository, SQLEmployeeRepository>();
+
             services.AddSingleton<IAuthorizationHandler, CanEditOnlyOtherAdminRolesAndClaimsHandler>();
+
             services.AddSingleton<IAuthorizationHandler, SuperAdminHandler>();
+
             services.AddMvc(config => {
                 var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
                 config.Filters.Add(new AuthorizeFilter(policy));
